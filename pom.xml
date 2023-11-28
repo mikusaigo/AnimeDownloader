@@ -68,6 +68,11 @@
             <version>3.0.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.frostwire</groupId>
+            <artifactId>jlibtorrent</artifactId>
+            <version>1.2.0.18</version>
+        </dependency>
     </dependencies>
 
     <build>

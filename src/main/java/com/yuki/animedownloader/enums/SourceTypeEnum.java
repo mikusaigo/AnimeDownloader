@@ -1,4 +1,4 @@
-package com.yuki.util.animedownloader.enums;
+package com.yuki.animedownloader.enums;
 
 /**
  * 资源类型枚举

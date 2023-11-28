@@ -1,6 +1,7 @@
-package com.yuki.util.animedownloader.model;
+package com.yuki.animedownloader.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
 
