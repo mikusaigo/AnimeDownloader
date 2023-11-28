@@ -27,13 +27,19 @@ public class ResourceInfo {
     private String resourceMagnetUri;
 
     // 资源大小
-    private String resourceSize;
+    private String resourceTotalFileSize;
+
+    // 资源大小
+    private String resourceTotalFileNum;
 
     // 资源类型
     private String resourceType;
 
     // 资源上传者
     private String resourceUploader;
+
+    // 资源分辨率
+    private String resourceResolution;
 
     // 发表日期
     private Date postedDate;
@@ -43,4 +49,7 @@ public class ResourceInfo {
 
     // 更新时间
     private Date updateTime;
+
+    // 备注
+    private String remark;
 }
