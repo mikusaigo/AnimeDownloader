@@ -1,20 +1,12 @@
-package com.yuki.animedownloader.model;
+package com.yuki.animedownloader.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * 资源信息
- * @author yukino
- */
 @Data
-public class ResourceInfo {
+public class ResourceInfoVo {
 
-    // 主键
-    @TableId(type = IdType.INPUT)
     private String uuid;
 
     // 资源简名
@@ -38,11 +30,11 @@ public class ResourceInfo {
     // 资源类型
     private String type;
 
-    // 资源语言
-    private String language;
-
     // 资源上传者
     private String uploader;
+
+    // 资源语言
+    private String language;
 
     // 资源分辨率
     private String resolution;
