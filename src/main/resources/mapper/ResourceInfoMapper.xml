@@ -6,11 +6,11 @@
 
     <insert id="insertOrUpdate">
         replace into resource_info
-        (uuid, name, detail_url, magnet_uri, total_file_size, type, language, resolution, uploader, remark)
+        (uuid, name, detail_url, magnet_uri, total_file_size, type, language, resolution, uploader, posted_time, remark)
         values
         <foreach collection="dataList" item="data" separator=",">
             (#{data.uuid}, #{data.name}, #{data.detailUrl}, #{data.magnetUri}, #{data.totalFileSize}, #{data.type}, #{data.language},
-            #{data.resolution}, #{data.uploader}, #{data.remark})
+            #{data.resolution}, #{data.uploader}, #{data.postedTime}, #{data.remark})
         </foreach>
     </insert>
 </mapper>

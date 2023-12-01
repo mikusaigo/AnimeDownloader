@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface ResourceInfoService {
 
-    List<ResourceInfoVo> comicatDownload(ResourceInfoQueryVo queryVo);
+    List<ResourceInfoVo> comicatCrawls(ResourceInfoQueryVo queryVo);
+
+    List<ResourceInfoVo> download();
 }

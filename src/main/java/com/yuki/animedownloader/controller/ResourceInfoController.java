@@ -19,10 +19,15 @@ public class ResourceInfoController {
     @Autowired
     ResourceInfoService resourceInfoService;
 
-    @GetMapping("/download/comicat")
-    public List<ResourceInfoVo> comicatDownload(ResourceInfoQueryVo queryVo){
+    @GetMapping("/crawls/comicat")
+    public List<ResourceInfoVo> comicatCrawls(ResourceInfoQueryVo queryVo){
         init(queryVo);
-        return resourceInfoService.comicatDownload(queryVo);
+        return resourceInfoService.comicatCrawls(queryVo);
+    }
+
+    @GetMapping("/download")
+    public List<ResourceInfoVo> download(){
+        return resourceInfoService.download();
     }
 
     public void init(ResourceInfoQueryVo queryVo){

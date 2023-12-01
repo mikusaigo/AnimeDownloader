@@ -10,6 +10,10 @@ public enum SourceTypeEnum {
 
     PERIPHERALS("PERIPHERALS", "周边"),
 
+    MUSIC("MUSIC", "音乐"),
+
+    CARTOON("CARTOON", "漫画"),
+
     UNKNOWN("UNKNOWN", "未知");
 
     final String type;

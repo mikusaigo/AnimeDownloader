@@ -1,8 +1,12 @@
 package com.yuki.animedownloader.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.collection.CollUtil;
+import com.acgist.snail.context.exception.DownloadException;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.yuki.animedownloader.constants.ResourceConstants;
 import com.yuki.animedownloader.crawlers.ComicatCrawlers;
+import com.yuki.animedownloader.mapper.ResourceInfoMapper;
 import com.yuki.animedownloader.model.ResourceInfo;
 import com.yuki.animedownloader.parser.HtmlParser;
 import com.yuki.animedownloader.repository.ResourceInfoRepository;
@@ -23,8 +27,11 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
     @Autowired
     ResourceInfoRepository resourceInfoRepository;
 
+    @Autowired
+    ResourceInfoMapper resourceInfoMapper;
+
     @Override
-    public List<ResourceInfoVo> comicatDownload(ResourceInfoQueryVo queryVo) {
+    public List<ResourceInfoVo> comicatCrawls(ResourceInfoQueryVo queryVo) {
         ComicatCrawlers comicatCrawlers = new ComicatCrawlers();
         comicatCrawlers.buildUrl("/search.php?keyword=" + queryVo.getResourceName() + " " + queryVo.getUploader() + " " + queryVo.getLanguage());
         log.info("请求的地址：{}", comicatCrawlers.getTargetUrl());
@@ -32,7 +39,24 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
         HtmlParser htmlParser = new HtmlParser();
         List<ResourceInfo> result = htmlParser.parse(html);
         resourceInfoRepository.insertOrUpdate(result);
-        MagnetAnalyzeUtil.downloadFilesFromMagnet("adacae4f42d69e0e952a08181b6ded4c30a7daa5", FileUtil.file("C:\\Users\\袁超\\Desktop\\"));
         return BeanUtil.copyToList(result, ResourceInfoVo.class);
+    }
+
+    @Override
+    public List<ResourceInfoVo> download() {
+        List<ResourceInfo> resourceInfos = resourceInfoMapper.selectList(Wrappers.<ResourceInfo>lambdaQuery()
+                .eq(ResourceInfo::getLanguage, "简日")
+                .eq(ResourceInfo::getUploader, "北宇治字幕组")
+                .like(ResourceInfo::getName, "芙莉莲"));
+        if (CollUtil.isEmpty(resourceInfos)) {
+            throw new RuntimeException("没有找到可下载的的数据");
+        }
+        ResourceInfo resourceInfo = resourceInfos.stream().filter(ri -> ri.getName().contains("[02]")).findFirst().get();
+        try {
+            MagnetAnalyzeUtil.downloadFilesFromMagnet(ResourceConstants.BASE_MAGNET_URL + resourceInfo.getMagnetUri());
+        } catch (DownloadException e) {
+            log.debug(e.getMessage());
+        }
+        return CollUtil.toList(BeanUtil.toBean(resourceInfo, ResourceInfoVo.class));
     }
 }
