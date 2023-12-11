@@ -1,5 +1,6 @@
 package com.yuki.animedownloader.crawlers;
 
+import com.yuki.animedownloader.vo.ResourceInfoQueryVo;
 import lombok.Data;
 
 @Data
@@ -20,5 +21,7 @@ public abstract class AbstractCrawlers{
     protected abstract String getBaseUrl();
 
     protected abstract void buildUrl(String suffixUrl);
+
+    protected abstract <T extends ResourceInfoQueryVo> String buildQueryParams(T queryEntity);
 
 }

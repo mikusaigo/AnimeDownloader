@@ -31,7 +31,7 @@ public class ResourceUtil {
         return get(resourceName, "show-(\\w{40}).html");
     }
 
-    private static String get(String target, String patternStr){
+    public static String get(String target, String patternStr){
         Pattern pattern = Pattern.compile(patternStr);
 
         Matcher matcher = pattern.matcher(target);

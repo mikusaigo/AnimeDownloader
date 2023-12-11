@@ -7,6 +7,10 @@ spring:
         username: root
         password: yuki123
 
+logging:
+    level:
+        com.acgist.snail: off
+
 mybatis-plus:
     configuration:
         map-underscore-to-camel-case: true
@@ -15,3 +19,6 @@ mybatis-plus:
     global-config:
         db-config:
             id-type: auto
+
+download:
+    base-path: E:\test1

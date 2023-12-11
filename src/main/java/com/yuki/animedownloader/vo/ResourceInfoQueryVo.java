@@ -20,4 +20,6 @@ public class ResourceInfoQueryVo {
 
     private String language;
 
+    private String isSaveResource;
+
 }

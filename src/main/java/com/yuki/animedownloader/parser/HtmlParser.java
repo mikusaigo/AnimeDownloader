@@ -23,9 +23,14 @@ public class HtmlParser extends AbstractParser<String, ResourceInfo> {
         List<ResourceInfo> dataList = new ArrayList<>();
         for (Element row : rows) {
             Elements tds = row.select("td");
+            String td0 = tds.get(0).text();
+            if (td0.contains("没有可显示资源")){
+                return null;
+            }
+
             ResourceInfo resourceInfo = new ResourceInfo();
             // 资源发表日期
-            resourceInfo.setPostedTime(SpecialDateUtil.toNormalDate(tds.get(0).text()));
+            resourceInfo.setPostedTime(SpecialDateUtil.toNormalDate(td0));
             // 资源类型
             resourceInfo.setType(SourceTypeEnum.nameToCode(tds.get(1).text()));
 
