@@ -1,5 +1,6 @@
 package com.yuki.animedownloader.util;
 
+import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.acgist.snail.Snail;
@@ -36,7 +37,11 @@ public class MagnetAnalyzeUtil {
 //        if (CharSequenceUtil.isNotBlank(savePath)){
 //            DownloadConfig.setPath(savePath);
 //        }
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("downloadTorrent");
         File torrentFile = downloadTorrentFromMagnet(magnetUri);
+        stopWatch.stop();
+        log.info("从magnet下载torrent耗时：{}", TimeFormatUtil.toNormalTime(stopWatch.getLastTaskTimeMillis()));
         File[] files = FileUtil.ls(torrentFile.getAbsolutePath());
         final String torrentPath = files[0].getAbsolutePath();
         final Snail snail = Snail.SnailBuilder.newBuilder()
@@ -58,10 +63,12 @@ public class MagnetAnalyzeUtil {
         //        MultifileEventAdapter.files(DescriptionWrapper.newEncoder(list).serialize());
         // 添加下载
 
-        ITaskSession download = snail.download(torrentPath);
-        IStatisticsSession statistics = download.statistics();
-
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        ITaskSession download = snail.download(torrentPath);
+        stopWatch.start("downloadFileFromTorrent");
+
+        IStatisticsSession statistics = download.statistics();
 
         // 通过scheduleAtFixedRate方法定期执行任务
         scheduler.scheduleAtFixedRate(() -> {
@@ -80,9 +87,11 @@ public class MagnetAnalyzeUtil {
             // 停止条件，这里假设条件在任务内部某处被修改
             if (download.statusCompleted()) {
                 log.info("文件名:{} 下载完成", fileName);
+                stopWatch.stop();
                 // 停止任务
                 download.downloader().release();
                 scheduler.shutdown();
+                log.info("从torrent下载文件耗时：{}", TimeFormatUtil.toNormalTime(stopWatch.getLastTaskTimeMillis()));
             }
         }, 0, 1, TimeUnit.SECONDS);
         // 等待下载完成

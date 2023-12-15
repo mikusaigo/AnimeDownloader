@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.yuki.animedownloader.config.DownloadConfig;
 import com.yuki.animedownloader.constants.ResourceConstants;
 import com.yuki.animedownloader.crawlers.ComicatCrawlers;
-import com.yuki.animedownloader.enums.SourceTypeEnum;
 import com.yuki.animedownloader.mapper.ResourceInfoMapper;
 import com.yuki.animedownloader.model.ResourceInfo;
 import com.yuki.animedownloader.parser.HtmlParser;
@@ -64,13 +63,13 @@ public class ResourceInfoServiceImpl implements ResourceInfoService {
     @Override
     public List<ResourceInfoVo> download() {
         List<ResourceInfo> resourceInfos = resourceInfoMapper.selectList(Wrappers.<ResourceInfo>lambdaQuery()
-                .eq(ResourceInfo::getType, SourceTypeEnum.MUSIC.getType())
-                .eq(ResourceInfo::getUploader, "天使动漫论坛")
-                .like(ResourceInfo::getName, "Hands Up to the Sky"));
+                .eq(ResourceInfo::getLanguage, "简日")
+                .eq(ResourceInfo::getUploader, "北宇治字幕组")
+                .like(ResourceInfo::getName, "芙莉莲"));
         if (CollUtil.isEmpty(resourceInfos)) {
             throw new RuntimeException("没有找到可下载的数据");
         }
-        ResourceInfo resourceInfo = resourceInfos.get(1);
+        ResourceInfo resourceInfo = resourceInfos.stream().filter(rs -> rs.getName().contains("02")).findFirst().get();
         try {
             MagnetAnalyzeUtil.downloadFilesFromMagnet(ResourceConstants.BASE_MAGNET_URL + resourceInfo.getMagnetUri(), downloadConfig.getPath(resourceInfo.getType()));
         } catch (DownloadException e) {
