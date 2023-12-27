@@ -3,7 +3,7 @@ package com.yuki.animedownloader.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ResourceUtil {
+public class ResourceInfoUtil {
 
     /**
      * 从资源名称中获取资源分辨率

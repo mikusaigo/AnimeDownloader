@@ -2,7 +2,7 @@ package com.yuki.animedownloader.parser;
 
 import com.yuki.animedownloader.enums.SourceTypeEnum;
 import com.yuki.animedownloader.model.ResourceInfo;
-import com.yuki.animedownloader.util.ResourceUtil;
+import com.yuki.animedownloader.util.ResourceInfoUtil;
 import com.yuki.animedownloader.util.SpecialDateUtil;
 import com.yuki.animedownloader.util.UuidUtil;
 import org.jsoup.Jsoup;
@@ -37,12 +37,12 @@ public class HtmlParser extends AbstractParser<String, ResourceInfo> {
             Element td2 = tds.get(2);
             // 资源名称
             resourceInfo.setName(td2.text());
-            resourceInfo.setResolution(ResourceUtil.getDPI(resourceInfo.getName()));
+            resourceInfo.setResolution(ResourceInfoUtil.getDPI(resourceInfo.getName()));
             Elements td1_a = td2.select(">a");
             String href = td1_a.attr("href");
             // 资源明细地址
             resourceInfo.setDetailUrl(href);
-            resourceInfo.setMagnetUri(ResourceUtil.getSourceMagnet(resourceInfo.getDetailUrl()));
+            resourceInfo.setMagnetUri(ResourceInfoUtil.getSourceMagnet(resourceInfo.getDetailUrl()));
 
             // 文件总大小
             resourceInfo.setTotalFileSize(tds.get(3).text());

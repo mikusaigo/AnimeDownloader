@@ -1,7 +1,7 @@
 package com.yuki.animedownloader.util;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.acgist.snail.Snail;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.ProtocolContext;
@@ -15,7 +15,8 @@ import com.acgist.snail.pojo.ITaskSession;
 import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
-import com.yuki.animedownloader.constants.FileSizeUnitConstants;
+import com.yuki.animedownloader.enums.FileSizeUnitEnum;
+import com.yuki.animedownloader.model.FileSize;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -67,7 +68,8 @@ public class MagnetAnalyzeUtil {
         scheduler.scheduleAtFixedRate(() -> {
             String fileName = download.downloadFile().getName();
             if (download.statusDownload() && !download.statusCompleted()){
-                log.info("文件名:{} --------- 下载速度：{}KB/s，已下载：{}{}", fileName, statistics.downloadSpeed() / 1024d, statistics.downloadSize()/ (double) (1024 * 1024), FileSizeUnitConstants.MB);
+                String schedule = NumberUtil.decimalFormat("#.##%", (statistics.downloadSize() / 1024d) / FileUtils.parseToKB(FileSize.of(download.getSize() / 1024d, FileSizeUnitEnum.KB)).getSize());
+                log.info("文件名:{} --------- 下载速度：{}KB/s，已下载：{}{},下载进度：{}", fileName, NumberUtil.round(statistics.downloadSpeed() / 1024d, 1), NumberUtil.round(statistics.downloadSize()/ (double) (1024 * 1024), 3), FileSizeUnitEnum.MB.getUnit(), schedule);
             }
 
             if (download.statusFail()){
@@ -87,7 +89,6 @@ public class MagnetAnalyzeUtil {
         }, 0, 1, TimeUnit.SECONDS);
         // 等待下载完成
         snail.lockDownload();
-
     }
 
     /**
@@ -105,8 +106,6 @@ public class MagnetAnalyzeUtil {
         downloader.run();
         final var file = new File(taskSession.getFile());
         log.info(file.getAbsolutePath());
-        assert file.exists();
-        assert ArrayUtil.isNotEmpty(file.list());
         taskSession.delete();
         return file;
     }

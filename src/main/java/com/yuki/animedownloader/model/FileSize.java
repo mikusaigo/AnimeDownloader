@@ -1,25 +1,34 @@
 package com.yuki.animedownloader.model;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import com.yuki.animedownloader.constants.FileSizeUnitConstants;
+import com.yuki.animedownloader.enums.FileSizeUnitEnum;
 import lombok.Data;
 
 @Data
 public class FileSize {
 
-    private int size;
+    private double size;
 
-    private String unit;
+    private FileSizeUnitEnum unit;
 
-    public FileSize(int size, String unit){
+    private FileSize(double size, FileSizeUnitEnum unit){
         this.size = size;
         this.unit = unit;
     }
 
     public static FileSize of(String fileSizeStr){
         if (CharSequenceUtil.isBlank(fileSizeStr)){
-            return new FileSize(0, FileSizeUnitConstants.MB);
+            return FileSize.of(0, FileSizeUnitEnum.MB);
         }
         return null;
+    }
+
+    public static FileSize of(double size, FileSizeUnitEnum unit){
+        return new FileSize(0, FileSizeUnitEnum.MB);
+    }
+
+    @Override
+    public String toString() {
+        return size + unit.getUnit();
     }
 }
