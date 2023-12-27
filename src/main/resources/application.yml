@@ -21,4 +21,4 @@ mybatis-plus:
             id-type: auto
 
 download:
-    base-path: E:\test1
+    base-path: E:\download\anime\
