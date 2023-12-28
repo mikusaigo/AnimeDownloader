@@ -1,5 +1,8 @@
 package com.yuki.animedownloader.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum FileSizeUnitEnum {
 
     KB("KB"),
@@ -11,10 +14,6 @@ public enum FileSizeUnitEnum {
 
     FileSizeUnitEnum(String unit) {
         this.unit = unit;
-    }
-
-    public String getUnit(){
-        return unit;
     }
 
     public static FileSizeUnitEnum of(String unit){

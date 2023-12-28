@@ -2,8 +2,10 @@ package com.yuki.animedownloader.util;
 
 import cn.hutool.core.date.StopWatch;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.acgist.snail.Snail;
+import com.acgist.snail.config.DownloadConfig;
 import com.acgist.snail.context.GuiContext;
 import com.acgist.snail.context.ProtocolContext;
 import com.acgist.snail.context.TorrentContext;
@@ -17,10 +19,10 @@ import com.acgist.snail.pojo.bean.Torrent;
 import com.acgist.snail.pojo.bean.TorrentInfo;
 import com.acgist.snail.protocol.magnet.MagnetProtocol;
 import com.yuki.animedownloader.enums.FileSizeUnitEnum;
-import com.yuki.animedownloader.model.FileSize;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,9 +37,9 @@ public class MagnetAnalyzeUtil {
      * @throws NetException
      */
     public static void downloadFilesFromMagnet(String magnetUri, String savePath) throws DownloadException {
-//        if (CharSequenceUtil.isNotBlank(savePath)){
-//            DownloadConfig.setPath(savePath);
-//        }
+        if (CharSequenceUtil.isNotBlank(savePath)){
+            DownloadConfig.setPath(savePath);
+        }
         StopWatch stopWatch = new StopWatch();
         stopWatch.start("downloadTorrent");
         File torrentFile = downloadTorrentFromMagnet(magnetUri);
@@ -66,17 +68,19 @@ public class MagnetAnalyzeUtil {
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+
         ITaskSession download = snail.download(torrentPath);
         stopWatch.start("downloadFileFromTorrent");
 
         IStatisticsSession statistics = download.statistics();
 
+        Long fileSize = download.getSize();
         // 通过scheduleAtFixedRate方法定期执行任务
         scheduler.scheduleAtFixedRate(() -> {
             String fileName = download.downloadFile().getName();
             if (download.statusDownload() && !download.statusCompleted()){
-                String schedule = NumberUtil.decimalFormat("#.##%", (statistics.downloadSize() / 1024d) / FileUtils.parseToKB(FileSize.of(download.getSize() / 1024d, FileSizeUnitEnum.KB)).getSize());
-                log.info("文件名:{} --------- 下载速度：{}KB/s，已下载：{}{},下载进度：{}", fileName, NumberUtil.round(statistics.downloadSpeed() / 1024d, 1), NumberUtil.round(statistics.downloadSize()/ (double) (1024 * 1024), 3), FileSizeUnitEnum.MB.getUnit(), schedule);
+                BigDecimal round = NumberUtil.round((statistics.downloadSize() / 1024d) / (fileSize / 1024d) * 100, 2);
+                log.info("文件名:{} ------ 下载速度：{}/s，已下载：{}{}，下载进度：{}%", fileName, NumberUtil.round(statistics.downloadSpeed() / 1024d, 1), NumberUtil.round(statistics.downloadSize()/ (double) (1024 * 1024), 3).toString(), FileSizeUnitEnum.MB.getUnit(), round.toString());
             }
 
             if (download.statusFail()){
@@ -93,6 +97,7 @@ public class MagnetAnalyzeUtil {
                 // 停止任务
                 download.downloader().release();
                 scheduler.shutdown();
+                FileUtil.del(FileUtil.getParent(torrentFile, 1));
                 log.info("从torrent下载文件耗时：{}", TimeFormatUtil.toNormalTime(stopWatch.getLastTaskTimeMillis()));
             }
         }, 0, 1, TimeUnit.SECONDS);
