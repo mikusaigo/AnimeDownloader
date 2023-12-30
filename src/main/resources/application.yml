@@ -1,0 +1,24 @@
+spring:
+    application:
+        name: anime-downloader
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:13306/anime_magnet_info?characterEncoding=UTF8&Timezone=Asia/Shanghai
+        username: root
+        password: yuki123
+
+logging:
+    level:
+        com.acgist.snail: off
+
+mybatis-plus:
+    configuration:
+        map-underscore-to-camel-case: true
+        call-setters-on-nulls: true
+    mapper-location: classpath*:mapper/*Mapper.xml
+    global-config:
+        db-config:
+            id-type: auto
+
+download:
+    base-path: E:\download\anime\test

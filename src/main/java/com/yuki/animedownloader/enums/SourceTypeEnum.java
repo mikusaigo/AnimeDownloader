@@ -1,4 +1,4 @@
-package com.yuki.util.animedownloader.enums;
+package com.yuki.animedownloader.enums;
 
 /**
  * 资源类型枚举
@@ -9,6 +9,10 @@ public enum SourceTypeEnum {
     ANIME("ANIME", "动画"),
 
     PERIPHERALS("PERIPHERALS", "周边"),
+
+    MUSIC("MUSIC", "音乐"),
+
+    CARTOON("CARTOON", "漫画"),
 
     UNKNOWN("UNKNOWN", "未知");
 

@@ -68,6 +68,21 @@
             <version>3.0.3</version>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.frostwire</groupId>-->
+<!--            <artifactId>jlibtorrent</artifactId>-->
+<!--            <version>1.2.0.16</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.frostwire</groupId>-->
+<!--            <artifactId>jlibtorrent-windows</artifactId>-->
+<!--            <version>1.2.0.16</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.acgist</groupId>
+            <artifactId>snail</artifactId>
+            <version>1.17.1</version>
+        </dependency>
     </dependencies>
 
     <build>

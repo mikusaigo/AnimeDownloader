@@ -1,4 +1,4 @@
-package com.yuki.util.animedownloader;
+package com.yuki.animedownloader;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
